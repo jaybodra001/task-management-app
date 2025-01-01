@@ -15,16 +15,21 @@ const Layout = () => {
       <div className="bg-gray-600 w-60 text-white">
         <ul className="space-y-4">
           <li
-            className="p-4 hover:bg-gray-700 cursor-pointer text-center"
+            className="p-4 hover:bg-gray-700 cursor-pointer text-center bg-gray-500"
             onClick={() => handleClick('addTask')}
           >
             Add Task
           </li>
           <li
-            className="p-4 hover:bg-gray-700 cursor-pointer text-center"
+            className="p-4 hover:bg-gray-700 cursor-pointer text-center bg-gray-500"
             onClick={() => handleClick('manageTasks')}
           >
             Manage Tasks
+          </li>
+          <li
+            className="p-4 hover:bg-gray-700 cursor-pointer text-center bg-gray-500"
+          >
+            Logout
           </li>
         </ul>
       </div>
