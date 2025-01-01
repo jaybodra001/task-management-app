@@ -6,6 +6,7 @@ import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
 import Home from './pages/Home';
 import UserDash from './pages/UserDash';
+import Footer from './components/Auth/Footer';
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/user" element={<UserDash />} />
       </Routes>
+      <Footer />
     </Router>
   )
 }

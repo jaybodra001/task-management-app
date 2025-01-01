@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import AddTask from '../components/AddTask';
 import ManageTasks from '../components/ManageTasks'; // Assuming you have this component
+import Profile from '../components/Profile';
 
 const Layout = () => {
-  const [activeComponent, setActiveComponent] = useState('addTask');
+  const [activeComponent, setActiveComponent] = useState('profile');
 
   const handleClick = (component) => {
     setActiveComponent(component);
@@ -13,7 +14,13 @@ const Layout = () => {
     <div className="flex min-h-screen">
       {/* Sidebar */}
       <div className="bg-gray-600 w-60 text-white">
-        <ul className="space-y-4">
+        <ul className="space-y-1">
+          <li
+            className="p-4 hover:bg-gray-700 cursor-pointer text-center bg-gray-500"
+            onClick={() => handleClick('profile')}
+          >
+            Profile
+          </li>
           <li
             className="p-4 hover:bg-gray-700 cursor-pointer text-center bg-gray-500"
             onClick={() => handleClick('addTask')}
@@ -36,6 +43,7 @@ const Layout = () => {
 
       {/* Main Content */}
       <div className="flex-1 p-6">
+        {activeComponent === 'profile' && <Profile />}
         {activeComponent === 'addTask' && <AddTask />}
         {activeComponent === 'manageTasks' && <ManageTasks />}
       </div>
