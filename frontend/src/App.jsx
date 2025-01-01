@@ -1,21 +1,22 @@
 import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css'
 import Navbar from "./components/Navbar";
 import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
+import Home from './pages/Home';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
+    <Router>
       <Navbar />
-      <Register />    
-      <Login />
-      <h1 className="text-3xl font-bold underline">
-        Jay Mataji
-      </h1>
-    </>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   )
 }
 
