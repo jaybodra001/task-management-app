@@ -6,9 +6,9 @@ const Navbar = () => {
 
       <h1 className="cursor-pointer text-3xl font-bold font-mono">{"{{"} MyTask {"}}"}</h1>
       
-      <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+      {/* <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
         Logout
-      </button>
+      </button> */}
     </div>
   );
 };

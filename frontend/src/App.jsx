@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
 import Home from './pages/Home';
+import UserDash from './pages/UserDash';
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/user" element={<UserDash />} />
       </Routes>
     </Router>
   )

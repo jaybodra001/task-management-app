@@ -7,7 +7,6 @@ const Register = () => {
       <form  className="w-full max-w-md p-6 bg-white border rounded shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Register</h2>
 
-      {/* Name Field */}
       <div className="mb-4">
         <label htmlFor="name" className="block text-sm font-medium mb-1">
           Name
