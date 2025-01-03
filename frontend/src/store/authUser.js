@@ -8,6 +8,7 @@ export const useAuthStore = create((set) => ({
 	isCheckingAuth: true,
 	isLoggingOut: false,
 	isLoggingIn: false,
+	isAddTask: false,
 	signup: async (credentials) => {
 		set({ isSigningUp: true });
 		try {
@@ -47,9 +48,21 @@ export const useAuthStore = create((set) => ({
 		try { 
 			const response = await axios.get("/api/v1/auth/authCheck")
 
-			set({ user: response.data.user, isCheckingAuth: false });
+			set({ user: response.data.user, isAddTask: false });
 		} catch (error) {
 			set({ isCheckingAuth: false, user: null });
 		}
-	},      
+	},  
+	
+	addTask: async (credentials) => {
+		set({ isSigningUp: true });
+		try {
+			const response = await axios.post("/api/v1/user/add-task", credentials);
+			set({ user: response.data.user, isSigningUp: false });
+			toast.success("Account created successfully");
+		} catch (error) {
+			toast.error(error.response.data.message || "Signup failed");
+			set({ isSigningUp: false, user: null });
+		}
+	},
 }));
