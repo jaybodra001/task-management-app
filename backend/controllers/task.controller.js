@@ -85,7 +85,7 @@ export async function addTask(req, res) {
 export async function updateTask(req, res) {
     try {
         const { id } = req.params;
-        const { title, description } = req.body;
+        const { title, description, status } = req.body;
 
         if (!id) {
             return res.status(400).json({
@@ -136,6 +136,48 @@ export async function updateTask(req, res) {
         });
     }
 }
+
+export async function taskCompOrNot(req, res) {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        console.log("status", status);
+
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: "Task ID is required!"
+            });
+        }
+        const updatedTask = await Task.findByIdAndUpdate(
+            id,
+            { $set: { status } },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedTask) {
+            return res.status(404).json({
+                success: false,
+                message: "Task not found!"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Task status updated successfully!",
+            task: updatedTask
+        });
+    } catch (e) {
+        console.error("Error controller:", e.message);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error!"
+        });
+    }
+}
+
+
 
 export async function deleteTask(req, res) {
     try {

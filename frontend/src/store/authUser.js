@@ -11,9 +11,11 @@ export const useAuthStore = create((set) => ({
   isAddTask: false,
   isShowTask: false,
   tasks: [],
-  totalTasks: 0,  // Initialize with 0
+  totalTasks: 0, 
   currentPage: 1,
   totalPages: 1,
+  isUpdateTask: false,
+  isDeleteTask: false,
 
   signup: async (credentials) => {
     set({ isSigningUp: true });
@@ -74,15 +76,15 @@ export const useAuthStore = create((set) => ({
     }
   },
 
- 	 getAllTasks : async (page = 1, limit = 10) => {
+ getAllTasks : async (page = 1, limit = 10) => {
 	set({ isShowTask: true });
 	try {
 	  const response = await axios.get(`/api/v1/user/all-tasks?page=${page}&limit=${limit}`);
 	  console.log('API Response for All Tasks:', response.data);
 	  set({
 		tasks: response.data.tasks,
-		totalTasks: response.data.totalTasks,  // Ensure this is being set correctly
-     	 totalPages: response.data.totalPages,// Ensure totalPages is returned
+		totalTasks: response.data.totalTasks,  
+     	 totalPages: response.data.totalPages,
 		isShowTask: false,
 	  });
 	} catch (error) {
@@ -98,8 +100,8 @@ export const useAuthStore = create((set) => ({
       const response = await axios.get(`/api/v1/user/user-tasks?page=${page}&limit=${limit}`);
       set({
         tasks: response.data.tasks,
-		totalTasks: response.data.totalTasks,  // Ensure this is being set correctly
-		totalPages: response.data.totalPages,// Ensure totalTasks is set correctly
+		totalTasks: response.data.totalTasks,  
+		totalPages: response.data.totalPages,
         isShowTask: false,
       });
     } catch (error) {
@@ -107,4 +109,41 @@ export const useAuthStore = create((set) => ({
       set({ isShowTask: false, tasks: [], totalTasks: 0 });
     }
   },
+
+updateTask: async (taskId, updatedTask) => {
+  set({ isUpdateTask: true });
+  try {
+    const response = await axios.put(`/api/v1/user/update-task/${taskId}`, updatedTask); 
+    set({ isUpdateTask: false, tasks: response.data.tasks }); 
+    toast.success("Task updated successfully");
+  } catch (error) {
+    toast.error(error.response.data.message || "Task update failed");
+    set({ isUpdateTask: false });
+  }
+},
+
+taskCompOrNot: async (taskId, updatedTask) => {
+	set({ isUpdateTask: true });
+	try {
+	  const response = await axios.put(`/api/v1/user/up-task/${taskId}`, updatedTask); 
+	  set({ isUpdateTask: false, tasks: response.data.tasks });  
+	  toast.success("Task status successfully updated");
+	} catch (error) {
+	  toast.error(error.response.data.message || "Task update failed");
+	  set({ isUpdateTask: false });
+	}
+  },
+
+deleteTask: async (taskId) => {
+	set({ isDeleteTask: true });
+	try {
+	  const response = await axios.delete(`/api/v1/user/delete-task/${taskId}`); 
+	  set({ isDeleteTask: false, tasks: response.data.tasks });
+	  toast.success("Task deleted successfully");
+	} catch (error) {
+	  toast.error(error.response.data.message || "Task delete failed");
+	  set({ isDeleteTask: false });
+	}
+  },
+
 }));
