@@ -3,16 +3,20 @@ import { useAuthStore } from '../store/authUser';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import Footer from './Auth/Footer';
+import { useNavigate } from 'react-router-dom'; 
 
 const AddTask = () => {
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
 
-  const { signup, isSigningUp } = useAuthStore();
+  const { addTask, isAddTask } = useAuthStore();
+  
+  // const navigate = useNavigate(); 
 
   const handleAddTask = (e) => {
     e.preventDefault();
-    signup({ title, description });
+    addTask({ title, description })
+    // navigate('/manage-tasks')
   };
 
   return (

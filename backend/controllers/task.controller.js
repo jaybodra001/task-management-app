@@ -1,39 +1,86 @@
 import { Task } from "../models/task.model.js"
 
-export async function addTask(req,res) {
-    try{
-        const {title,description} = req.body
+export async function getUserTasks(req, res) {
+    try {
+        const { page = 1, limit = 10 } = req.query; // Default to page 1, 10 tasks per page
+        const skip = (page - 1) * limit;
 
-        if(!title && !description){
-            return res.status(400).json({success:false,message:"All fields are reuired!!!"})
-        }
+        const tasks = await Task.find({ userId: req.user._id })
+            .skip(skip)
+            .limit(Number(limit));
 
-        if(!title){
-            return res.status(400).json({success:false,message:"Title is reuired!!!"})
-        }
+        const totalTasks = await Task.countDocuments({ userId: req.user._id });
+        const totalPages = Math.ceil(totalTasks / limit);
 
-        if(!description){
-            return res.status(400).json({success:false,message:"description is reuired!!!"})
-        }
-
-        const newTask = new Task({
-            title:title,
-            description:description
-        })
-
-        
-        await newTask.save()
-        
-        res.status(201).json({success:true,message:"Task created successfully!!!"})
-
-    }catch(e){
-        console.log("Error in SignUp controller:"+e.message)
-        res.status(500).json({success:false,message:"Internal server error!!!"})
-
-
+        res.status(200).json({ 
+            success: true, 
+            tasks, 
+            currentPage: Number(page), 
+            totalTasks, 
+            totalPages, 
+        });
+    } catch (e) {
+        console.error("Error in getUserTasks controller:", e.message);
+        res.status(500).json({ success: false, message: "Internal server error!" });
     }
-
 }
+
+  
+export async function getAllTasks(req, res) {
+    try {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ success: false, message: "Access denied!" });
+        }
+
+        const { page = 1, limit = 10 } = req.query; // Default to page 1, 10 tasks per page
+        const skip = (page - 1) * limit;
+
+        const tasks = await Task.find()
+            .skip(skip)
+            .limit(Number(limit));
+
+        const totalTasks = await Task.countDocuments();
+        const totalPages = Math.ceil(totalTasks / limit);
+
+        res.status(200).json({ 
+            success: true, 
+            tasks, 
+            currentPage: Number(page),
+            totalTasks, 
+            totalPages,
+        });
+    } catch (e) {
+        console.error("Error in getAllTasks controller:", e.message);
+        res.status(500).json({ success: false, message: "Internal server error!" });
+    }
+}
+
+  
+
+
+export async function addTask(req, res) {
+    try {
+      const { title, description } = req.body;
+  
+      if (!title || !description) {
+        return res.status(400).json({ success: false, message: "All fields are required!" });
+      }
+  
+      const newTask = new Task({
+        title,
+        description,
+        userId: req.user._id, 
+      });
+  
+      await newTask.save();
+  
+      res.status(201).json({ success: true, message: "Task created successfully!", task: newTask });
+    } catch (e) {
+      console.log("Error in addTask controller:", e.message);
+      res.status(500).json({ success: false, message: "Internal server error!" });
+    }
+  }
+  
 
 export async function updateTask(req, res) {
     try {

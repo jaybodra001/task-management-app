@@ -26,11 +26,11 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={user ? <Profile /> : <Navigate to={"/login"}/>} />
           <Route path="/register" element={!user ? <Register /> : <Navigate to={"/user"}/>} />
           <Route path="/login" element={!user ? <Login /> : <Navigate to={"/user"}/>} />
-          <Route path="/user" element={user ? <UserDash /> : <Navigate to={"/login"}/>} />
-          <Route path="/user/profile" element={<Profile />} />
+          <Route path="/user/" element={user ? <Profile /> : <Navigate to={"/login"}/>} />
+          <Route path="/user/profile" element={<Profile /> } />
           <Route path="/user/add-task" element={<AddTask />} />
           <Route path="/user/manage-tasks" element={<ManageTasks />} />
         </Routes>

@@ -10,7 +10,7 @@ export const protectRoute = async (req, res, next) => {
             return res.status(401).json({ success: false, message: "Unauthorized - No Token Provided" });
         }
 
-        console.log("Token:", token);
+       // console.log("Token:", token);
         const decoded = jwt.verify(token, ENV_VARS.JWT_SECRET);
 
         if (!decoded || !decoded.userId) {
@@ -18,7 +18,7 @@ export const protectRoute = async (req, res, next) => {
             return res.status(401).json({ success: false, message: "Unauthorized - Invalid Token" });
         }
 
-        console.log("Decoded Token:", decoded);
+      //  console.log("Decoded Token:", decoded);
 
         const user = await User.findById(decoded.userId).select("-password");
         console.log("User:", user);

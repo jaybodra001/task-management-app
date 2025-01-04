@@ -1,7 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'; // Import NavLink for navigation
+import { useAuthStore } from '../store/authUser';
 
 const Sidebar = () => {
+
+  const { logout } = useAuthStore();
   return (
     <div className="bg-gray-600 w-60 text-white">
       <ul className="space-y-1">
@@ -43,10 +46,7 @@ const Sidebar = () => {
         </li>
         <li
           className="p-4 text-center cursor-pointer bg-gray-500 hover:bg-gray-700"
-          onClick={() => {
-            localStorage.removeItem('user'); // Clear user session
-            window.location.href = '/login'; // Redirect to login
-          }}
+          onClick={logout}
         >
           Logout
         </li>
