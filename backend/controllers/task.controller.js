@@ -28,7 +28,7 @@ export async function getUserTasks(req, res) {
   
 export async function getAllTasks(req, res) {
     try {
-        if (req.user.role !== "admin") {
+        if (req.user.role == "admin") {
             return res.status(403).json({ success: false, message: "Access denied!" });
         }
 

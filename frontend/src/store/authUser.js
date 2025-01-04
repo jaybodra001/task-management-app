@@ -69,24 +69,21 @@ export const useAuthStore = create((set) => ({
     }
   },
   
-
- getAllTasks : async (page = 1, limit = 10) => {
-	set({ isShowTask: true });
-	try {
-	  const response = await axios.get(`/api/v1/user/all-tasks?page=${page}&limit=${limit}`);
-	  console.log('API Response for All Tasks:', response.data);
-	  set({
-		tasks: response.data.tasks,
-		totalTasks: response.data.totalTasks,  
-     	 totalPages: response.data.totalPages,
-		isShowTask: false,
-	  });
-	} catch (error) {
-	  toast.error(error.response.data.message || "Failed to load tasks");
-	  set({ isShowTask: false, tasks: [], totalTasks: 0 });
-	}
-  },  
-  
+  getAllTasks: async (page = 1, limit = 10) => {
+    set({ isShowTask: true });
+    try {
+      const response = await axios.get(`/api/v1/user/all-tasks?page=${page}&limit=${limit}`);
+      set({
+        tasks: response.data.tasks,
+        totalTasks: response.data.totalTasks,  
+        totalPages: response.data.totalPages,
+        isShowTask: false,
+      });
+    } catch (error) {
+      toast.error(error.response.data.message || "Failed to load tasks");
+      set({ isShowTask: false, tasks: [], totalTasks: 0 });
+    }
+  },
 
   getUserTasks: async (page = 1, limit = 10) => {
     set({ isShowTask: true });
@@ -94,8 +91,8 @@ export const useAuthStore = create((set) => ({
       const response = await axios.get(`/api/v1/user/user-tasks?page=${page}&limit=${limit}`);
       set({
         tasks: response.data.tasks,
-		totalTasks: response.data.totalTasks,  
-		totalPages: response.data.totalPages,
+        totalTasks: response.data.totalTasks,  
+        totalPages: response.data.totalPages,
         isShowTask: false,
       });
     } catch (error) {

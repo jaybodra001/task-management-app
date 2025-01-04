@@ -12,11 +12,13 @@ const ManageTasks = () => {
     tasks = [], 
     isShowTask,
     totalTasks,
-    userRole,
+    user,
     updateTask,
     taskCompOrNot,
     deleteTask
   } = useAuthStore();
+
+  console.log("userRole",user)
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -30,12 +32,17 @@ const ManageTasks = () => {
   console.log({ totalTasks, rowsPerPage, totalPages });
 
   useEffect(() => {
-    if (userRole === 'admin') {
+    if (user.role === 'admin') {
       getAllTasks(currentPage, rowsPerPage);
     } else {
       getUserTasks(currentPage, rowsPerPage);
     }
-  }, [currentPage, rowsPerPage, userRole, getAllTasks, getUserTasks]);
+  }, [currentPage, rowsPerPage, user, getAllTasks, getUserTasks]);
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+  
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -81,8 +88,12 @@ const ManageTasks = () => {
     try {
       await updateTask(editingTask._id, updatedTask);
       setEditingTask(null); 
-     // getAllTasks(currentPage, rowsPerPage)  
-      getUserTasks(currentPage, rowsPerPage)
+      
+      if(user.role === 'admin'){
+        getAllTasks(currentPage, rowsPerPage)
+      }else{
+        getUserTasks(currentPage, rowsPerPage)
+      }
     } catch (error) {
       console.error('Error updating task:', error);
     }
@@ -91,7 +102,11 @@ const ManageTasks = () => {
   const handleDelete = async (taskId) => {
     try {
       await deleteTask(taskId); 
-      getUserTasks(currentPage, rowsPerPage);
+      if(user.role === 'admin'){
+        getAllTasks(currentPage, rowsPerPage)
+      }else{
+        getUserTasks(currentPage, rowsPerPage)
+      }
     } catch (error) {
       console.error('Error deleting task:', error)
       toast.error('Failed to delete task')
@@ -102,7 +117,11 @@ const ManageTasks = () => {
     const updatedTask = { status: newStatus };
     try {
       await taskCompOrNot(taskId, updatedTask); 
-      getUserTasks(currentPage, rowsPerPage);
+      if(user.role === 'admin'){
+        getAllTasks(currentPage, rowsPerPage)
+      }else{
+        getUserTasks(currentPage, rowsPerPage)
+      }
     } catch (error) {
       console.error('Error updating task status:', error);
       toast.error('Failed to update task status');
@@ -181,35 +200,35 @@ const ManageTasks = () => {
                     <div key={task._id} className={`p-4 border rounded ${getTaskBgColor(index)}`}>
                       <h4 className="font-bold">{task.title}</h4>
                       <p>{task.description}</p>
-                      <div className="flex space-x-2 mt-2">
-                       
-                      <button
-                          onClick={() => handleStatusChange(task._id, task.status === 'Completed' ? 'In-Progress' : 'Completed')}
-                          className={`p-2 text-white rounded ${task.status === 'Completed' ? 'bg-green-500' : 'bg-blue-500'}`}
-                        >
-                          {task.status}
-                        </button>
-                        
-                        <button
-                          onClick={() => handleEdit(task)}
-                          className="p-2 bg-yellow-500 text-white rounded"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(task._id)}
-                          className="p-2 bg-red-500 text-white rounded"
-                        >
-                          Delete
-                        </button>
 
-                      </div>
+                      <div className="flex space-x-2 mt-2">
+                              <button
+                                onClick={() => handleStatusChange(task._id, task.status === 'Completed' ? 'In-Progress' : 'Completed')}
+                                className={`p-2 text-white rounded ${task.status === 'Completed' ? 'bg-green-500' : 'bg-blue-500'}`}
+                              >
+                                {task.status}
+                              </button>
+
+                              <button
+                                onClick={() => handleEdit(task)}
+                                className="p-2 bg-yellow-500 text-white rounded"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(task._id)}
+                                className="p-2 bg-red-500 text-white rounded"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div>No tasks available.</div>
+                      )}
                     </div>
-                  ))
-                ) : (
-                  <div>No tasks available.</div>
-                )}
-              </div>
+
 
               <div className="flex justify-between mt-4 items-center">
                 <div>
