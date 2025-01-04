@@ -42,39 +42,33 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  logout: async () => {
-    set({ isLoggingOut: true });
-    try {
-      await axios.post("/api/v1/auth/logout");
-      set({ user: null, isLoggingOut: false });
-      toast.success("Logged out successfully");
-    } catch (error) {
-      set({ isLoggingOut: false });
-      toast.error(error.response.data.message || "Logout failed");
-    }
-  },
-
   authCheck: async () => {
     set({ isCheckingAuth: true });
     try {
       const response = await axios.get("/api/v1/auth/authCheck");
-      set({ user: response.data.user, isAddTask: false });
+      set({ user: response.data.user, isCheckingAuth: false });
     } catch (error) {
       set({ isCheckingAuth: false, user: null });
     }
   },
 
-  addTask: async (credentials) => {
+  addTask: async (taskData) => {
     set({ isAddTask: true });
     try {
-      const response = await axios.post("/api/v1/user/add-task", credentials);
-      set({ user: response.data.user, isAddTask: false });
-      toast.success("Task created successfully");
+      const response = await axios.post('/api/v1/user/add-task', taskData);
+      set((state) => ({
+        tasks: [...state.tasks, response.data.task], // Add the new task to the existing list
+        isAddTask: false,
+      }));
+      return response.data.task; 
     } catch (error) {
-      toast.error(error.response.data.message || "Task failed");
-      set({ isAddTask: false, user: null });
+      console.error('Error adding task:', error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || 'Task creation failed');
+      set({ isAddTask: false });
+      throw error; 
     }
   },
+  
 
  getAllTasks : async (page = 1, limit = 10) => {
 	set({ isShowTask: true });
@@ -144,6 +138,40 @@ deleteTask: async (taskId) => {
 	  toast.error(error.response.data.message || "Task delete failed");
 	  set({ isDeleteTask: false });
 	}
+  },
+
+
+  logout: async () => {
+    set({ isLoggingOut: true });
+    try {
+      await axios.post("/api/v1/auth/logout");
+      set({ user: null, isLoggingOut: false });
+      toast.success("Logged out successfully");
+    } catch (error) {
+      set({ isLoggingOut: false });
+      toast.error(error.response.data.message || "Logout failed");
+    }
+  },
+
+  // Update Profile
+  updateProfile: async (profileData) => {
+    try {
+      const response = await axios.put('/api/v1/auth/update-profile', profileData);
+      set({ user: response.data.user }); // Update user in state
+      toast.success('Profile updated successfully!');
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Change Password
+  changePassword: async (passwordData) => {
+    try {
+      await axios.put('/api/v1/auth/change-password', passwordData);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to change password.');
+      throw error;
+    }
   },
 
 }));

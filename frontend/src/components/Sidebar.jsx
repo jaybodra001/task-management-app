@@ -10,7 +10,7 @@ const Sidebar = () => {
       <ul className="space-y-1">
         <li>
           <NavLink
-            to="/user/profile"
+            to="/profile"
             className={({ isActive }) =>
               `p-4 block text-center cursor-pointer ${
                 isActive ? 'bg-gray-700' : 'bg-gray-500 hover:bg-gray-700'
@@ -22,7 +22,7 @@ const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to="/user/add-task"
+            to="/add-task"
             className={({ isActive }) =>
               `p-4 block text-center cursor-pointer ${
                 isActive ? 'bg-gray-700' : 'bg-gray-500 hover:bg-gray-700'
@@ -34,7 +34,7 @@ const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to="/user/manage-tasks"
+            to="/manage-tasks"
             className={({ isActive }) =>
               `p-4 block text-center cursor-pointer ${
                 isActive ? 'bg-gray-700' : 'bg-gray-500 hover:bg-gray-700'

@@ -27,12 +27,11 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={user ? <Profile /> : <Navigate to={"/login"}/>} />
-          <Route path="/register" element={!user ? <Register /> : <Navigate to={"/user"}/>} />
-          <Route path="/login" element={!user ? <Login /> : <Navigate to={"/user"}/>} />
-          <Route path="/user/" element={user ? <Profile /> : <Navigate to={"/login"}/>} />
-          <Route path="/user/profile" element={<Profile /> } />
-          <Route path="/user/add-task" element={<AddTask />} />
-          <Route path="/user/manage-tasks" element={<ManageTasks />} />
+          <Route path="/register" element={!user ? <Register /> : <Navigate to={"/"}/>} />
+          <Route path="/login" element={!user ? <Login /> : <Navigate to={"/"}/>} />
+          <Route path="/profile" element={user ?<Profile /> : <Navigate to={"/login"}/>} />
+          <Route path="/add-task" element={user ? <AddTask /> : <Navigate to="/login" />} />
+          <Route path="/manage-tasks" element={user ? <ManageTasks />: <Navigate to={"/login"}/>} />
         </Routes>
       </Router>
       <Toaster />

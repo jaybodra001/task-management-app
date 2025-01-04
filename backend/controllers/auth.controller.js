@@ -92,3 +92,97 @@ export async function authCheck(req, res) {
 		res.status(500).json({ success: false, message: "Internal server error" });
 	}
 }
+
+
+export async function updateProfile(req, res) {
+    try {
+        const { name, email } = req.body;
+
+        // Validate inputs
+        if (!name || !email) {
+            return res.status(400).json({
+                success: false,
+                message: "Name and email are required!"
+            });
+        }
+
+        // Check if the email already exists in the database (excluding the current user's email)
+        const existingUser = await User.findOne({ email });
+        if (existingUser && existingUser._id.toString() !== req.user._id.toString()) {
+            return res.status(400).json({
+                success: false,
+                message: "Email is already taken by another user!"
+            });
+        }
+
+        // Update the user profile
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id, 
+            { $set: { name, email } },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found!"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Profile updated successfully!",
+            user: updatedUser
+        });
+    } catch (e) {
+        console.error("Error in updateProfile controller:", e.message);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error!"
+        });
+    }
+}
+
+export async function changePassword(req, res) {
+    try {
+      const { oldPassword, newPassword, confirmPassword } = req.body;
+
+      // Find the user
+      const user = await User.findById(req.user._id);
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found!"
+        });
+      }
+  
+      // Check if the old password matches
+      const isMatch = await bcryptjs.compare(oldPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({
+          success: false,
+          message: "Old password is incorrect!"
+        });
+      }
+  
+      // Hash the new password
+      const salt = await bcryptjs.genSalt(10);
+      const hashedPassword = await bcryptjs.hash(newPassword, salt);
+  
+      // Update the password
+      user.password = hashedPassword;
+      await user.save();
+  
+      res.status(200).json({
+        success: true,
+        message: "Password changed successfully!"
+      })
+    } catch (e) {
+      console.error("Error in changePassword controller:", e.message);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error!"
+      });
+    }
+  }
+  
